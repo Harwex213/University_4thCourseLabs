@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebApplication</title>
+</head>
+<body>
+<main>
+    <h1>Lab01</h1>
+    <div style="display: flex; flex-direction: row; align-items: baseline;">
+        <h3 id="result">Result: </h3>
+        <button type="button" onclick="getData()" style="margin: 0 15px;">Refresh</button>
+    </div>
+    <form onsubmit="postResult(); return false;">
+        <label>
+            New result
+            <input type="text" id="new-result" name="result" >
+        </label>
+        <button type="submit">Post</button>
+    </form>
+    <form style="margin-top: 20px;" onsubmit="putStack(); return false;">
+        <label>
+            Add to stack
+            <input type="text" id="add" name="add" >
+        </label>
+        <button type="submit">Put</button>
+        <button onclick="deleteStack()" type="button">Delete</button>
+        <div>
+            
+        </div>
+    </form>
+</main>
+<script
+  src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+  crossorigin="anonymous"></script>
+<script>
+    const resultPrefix = "Result: ";
+    const getData = async () => {
+        $.ajax({
+            url: `/api`,
+            type: "GET",
+            success: ({ Result }) => {
+                const resultContainer = document.querySelector("#result");
+                resultContainer.innerHTML = resultPrefix + Result;
+            },
+            error: (error) => {
+                console.log("GET response error: " +error);
+            }
+        })
+    }
+    const postResult = async () => {
+        const newResult = document.querySelector("#new-result").value;
+        $.ajax({
+            url: `/api?result=${newResult}`,
+            type: "POST",
+            success: getData,
+            error: (error) => {
+                console.log("POST response error: " +error);
+            }
+        })
+    }
+    const putStack = async () => {
+        const add = document.querySelector("#add").value;
+        $.ajax({
+            url: `/api?add=${add}`,
+            type: "PUT",
+            success: getData,
+            error: (error) => {
+                console.log("PUT response error: " +error);
+            }
+        })
+    }
+    const deleteStack = async () => {
+        $.ajax({
+            url: "/api",
+            type: "DELETE",
+            success: getData,
+            error: (error) => {
+                console.log("DELETE response error: " +error);
+            }
+        })
+    }
+
+    getData();
+</script>
+</body>
+</html>

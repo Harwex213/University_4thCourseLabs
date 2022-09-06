@@ -1,0 +1,68 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebApplication</title>
+</head>
+<body>
+<main>
+    <h1>Lab01</h1>
+    <h3 id="result">Result: </h3>
+    <form onsubmit="postResult(); return false;">
+        <label>
+            New result
+            <input type="text" id="new-result" name="result" >
+        </label>
+        <button type="submit">Post</button>
+    </form>
+    <form style="margin-top: 20px;" onsubmit="putStack(); return false;">
+        <label>
+            Add to stack
+            <input type="text" id="add" name="add" >
+        </label>
+        <button type="submit">Put</button>
+        <button onclick="deleteStack()" type="button">Delete</button>
+        <div>
+            
+        </div>
+    </form>
+</main>
+
+<script>
+    const resultPrefix = "Result: ";
+    const getData = async () => {
+        const response = await fetch("/");
+        const data = await response.json();
+        
+        const resultContainer = document.querySelector("#result");
+        resultContainer.innerHTML = resultPrefix + data.result;
+    }
+    const postResult = async () => {
+        const newResult = document.querySelector("#new-result").value;
+        const response = await fetch(`/?result=${newResult}`, {
+            method: "POST",
+        });
+        console.log("POST response code: " + response.status);
+    }
+    const putStack = async () => {
+        const add = document.querySelector("#add").value;
+        const response = await fetch(`/?add=${add}`, {
+            method: "PUT",
+        });
+        console.log("PUT response code: " + response.status);
+    }
+    const deleteStack = async () => {
+        const response = await fetch("/", {
+            method: "DELETE",
+        });
+        console.log("DELETE response code: " + response.status);
+    }
+
+    setInterval(getData, 1000);
+    getData();
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>RESTful service app</title>
+    <style>
+        .input {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<main id="main" style="display: none;">
+    <div style="display: flex; flex-direction: row;">
+        <form id="create-student" class="create-student" style="display: flex; flex-direction: column;">
+            <input type="text" class="name" />
+            <input type="text" class="phone input" />
+            
+            <button type="button" onclick="postStudent()">Create</button>
+        </form>
+        <form class="update-student" style="display: flex; flex-direction: column; margin: 0 15px;">
+            <select class="id">
+            </select>
+            <input type="text" class="name input" />
+            <input type="text" class="phone" />
+            
+            <button class="input" type="button" onclick="putStudent()">Update</button>
+        </form>
+        <form class="delete-student" style="display: flex; flex-direction: column; width: 107px;">
+            <select class="id">
+            </select>
+            
+            <button class="input" type="button" onclick="deleteStudent()">Delete</button>
+        </form>
+    </div>
+    <table id="table" style="margin: 30px 0 0 0; width: 100%;">
+        <thead id="thead">
+            <td>Id</td>
+            <td>Name</td>
+            <td>Phone</td>
+        </thead>
+        <tbody id="tbody"></tbody>
+    </table>
+</main>
+<script>
+let studentsUri = "";
+let errorsUri = "";
+const getAll = async () => {
+    const response = await fetch(studentsUri);
+    const data = await response.json();
+    
+    generateTable(data);
+}
+const table = document.querySelector("#table");
+const tBody = document.querySelector("#tbody");
+const analyzeListLinks = (links) => {
+    if (links.length === 0) {
+        return;
+    }
+    
+    const createLink = links.find(l => l.Rel === "create");
+    if (!createLink) {
+        document.querySelector(".create-student").style.display = "none";
+        return;
+    }
+    table.dataset.createStudent = JSON.stringify({ method: createLink.Method, href: createLink.Href });
+}
+const analyzeStudentLinks = (links, element, student) => {
+    if (links.length === 0) {
+        return;    
+    }
+    const analyzeUpdateLink = () => {
+        const updateLink = links.find(l => l.Rel === "update");
+        if (!updateLink) {
+            return;
+        }
+        element.dataset.updateStudent = JSON.stringify({ method: updateLink.Method, href: updateLink.Href });
+        
+        const option = document.createElement("option");
+        option.value = student.Id;
+        option.innerText = student.Id;
+        document.querySelector(".update-student .id").appendChild(option);
+    }
+    const analyzeDeleteLink = () => {
+        const deleteLink = links.find(l => l.Rel === "delete");
+        if (!deleteLink) {
+            return;
+        }
+        element.dataset.deleteStudent = JSON.stringify({ method: deleteLink.Method, href: deleteLink.Href });
+        
+        const option = document.createElement("option");
+        option.value = student.Id;
+        option.innerText = student.Id;
+        document.querySelector(".delete-student .id").appendChild(option);
+    }
+    
+    analyzeUpdateLink();
+    analyzeDeleteLink()
+}
+const generateTable = (data) => {
+    const { Content, Links } = data;
+    
+    tBody.innerHTML = "";
+    document.querySelector(".update-student .id").innerHTML = "";
+    document.querySelector(".delete-student .id").innerHTML = "";
+    analyzeListLinks(Links);
+    
+    if (Content.length === 0) {
+        return;
+    }
+    
+    for (const student of Content) {
+        const trBody = document.createElement("tr");
+        
+        const id = document.createElement("td");
+        id.innerText = student.Id;
+        trBody.dataset.id = student.Id;
+        analyzeStudentLinks(student.Links, trBody, student);
+        const name = document.createElement("td");
+        name.innerText = student.Name;
+        const phone = document.createElement("td");
+        phone.innerText = student.Phone;
+
+        trBody.appendChild(id);
+        trBody.appendChild(name);
+        trBody.appendChild(phone);
+        
+        tBody.appendChild(trBody);
+    }
+}
+
+const postStudent = async () => {
+    const name = document.querySelector(".create-student .name").value ?? "";
+    const phone = document.querySelector(".create-student .phone").value ?? "";
+    
+    const { method, href } = JSON.parse(table.dataset.createStudent);
+    const response = await fetch(href,  {
+        method: method,
+        headers: {    
+            "Content-Type": "application/json",    
+        },
+        body: JSON.stringify({
+            Name: name,
+            Phone: phone
+        })
+    });
+    
+    if (response.status === 200) {
+        getAll();
+        return;
+    }
+    
+    
+    // TODO: check for error + describe it
+}
+
+const putStudent = async () => {
+    const id = document.querySelector(".update-student .id").value ?? "";
+    const name = document.querySelector(".update-student .name").value ?? "";
+    const phone = document.querySelector(".update-student .phone").value ?? "";
+    
+    const studentElement = [...tBody.children].find(e => Number(e.dataset.id) === Number(id));
+    console.log(studentElement)
+    const { method, href } = JSON.parse(studentElement.dataset.updateStudent);
+    const response = await fetch(href,  {
+        method: method,
+        headers: {    
+            "Content-Type": "application/json",    
+        },
+        body: JSON.stringify({
+            Name: name,
+            Phone: phone
+        })
+    });
+    
+    if (response.status === 200) {
+        getAll();
+        return;
+    }
+    
+    
+    // TODO: check for error + describe it
+}
+
+const deleteStudent = async () => {
+    const id = document.querySelector(".delete-student .id").value ?? "";
+    
+    const studentElement = [...tBody.children].find(e => Number(e.dataset.id) === Number(id));  
+    const { method, href } = JSON.parse(studentElement.dataset.deleteStudent);
+    const response = await fetch(href,  {
+        method: method,
+    });
+    
+    if (response.status === 200) {
+        getAll();
+        return;
+    }
+    
+    const error = await response.json();
+    // TODO: check for error + describe it
+}
+
+const describeError = async () => {
+        
+}
+
+(async () => {
+    const response = await fetch("/api");
+    const links = await response.json();
+    
+    studentsUri = links.find(l => l.Rel === "students").Href;
+    errorsUri = links.find(l => l.Rel === "errors").Href;
+    
+    document.querySelector("#main").style.display = "block";
+    await getAll();
+})();
+</script>
+</body>
+</html>
