@@ -6,26 +6,30 @@ namespace Lab03
 {
     public class RouteConfig
     {
+        public const string ApiPrefix = "api";
         public const string StudentsUri = "students";
         public const string ErrorsUri = "errors";
         
         public static void RegisterHttpRoutes(HttpConfiguration config)
         {
+            config.Formatters.XmlFormatter.Indent = true;
+            config.Formatters.JsonFormatter.Indent = true;
+
             config.Routes.MapHttpRoute(
                 name: "HomeApi",
-                routeTemplate: "api",
+                routeTemplate: ApiPrefix,
                 defaults: new { controller = "HomeApi" }
             );
             
             config.Routes.MapHttpRoute(
                 name: "StudentsApi",
-                routeTemplate: "api/" + StudentsUri + "/{id}",
+                routeTemplate: ApiPrefix + "/" + StudentsUri + "/{id}",
                 defaults: new { controller = "Students", id = RouteParameter.Optional }
             );
 
             config.Routes.MapHttpRoute(
                 name: "ErrorsApi",
-                routeTemplate: "api/" + ErrorsUri + "/{code}",
+                routeTemplate: ApiPrefix + "/" + ErrorsUri + "/{code}",
                 defaults: new { controller = "Errors" }
             );
         }

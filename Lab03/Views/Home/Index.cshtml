@@ -35,26 +35,78 @@
             <button class="input" type="button" onclick="deleteStudent()">Delete</button>
         </form>
     </div>
-    <table id="table" style="margin: 30px 0 0 0; width: 100%;">
-        <thead id="thead">
-            <td>Id</td>
-            <td>Name</td>
-            <td>Phone</td>
-        </thead>
+    <form>
+        <p>Params</p>
+        <label>
+            Limit
+            <input type="text" id="param-limit">
+        </label>
+        <label>
+            Offset
+            <input type="text" id="param-offset">
+        </label>
+        <label>
+            Sort
+            <input type="checkbox" id="param-sort" checked>
+        </label>
+        <label>
+            MinId
+            <input type="text" id="param-minId">
+        </label>
+        <label>
+            MaxId
+            <input type="text" id="param-maxId">
+        </label>
+        <label>
+            Search by name
+            <input type="text" id="param-like">
+        </label>
+        <label>
+            Global search
+            <input type="text" id="param-globalLike">
+        </label>
+        <p>
+            MediaType
+        </p>
+        <label>
+            <input type="radio" name="mediaType" id="param-mediaType-xml">
+            Xml
+            <input type="radio" name="mediaType" id="param-mediaType-json">
+            Json
+        </label>
+    </form>
+    <form>
+        <p>Columns</p>
+        <input type="checkbox" id="checkbox-id" name="Id" checked/>
+        <label for="checkbox-id">Id</label>
+        <input type="checkbox" id="checkbox-name" name="Name" checked/>
+        <label for="checkbox-name">Name</label>
+        <input type="checkbox" id="checkbox-phone" name="Phone" checked/>
+        <label for="checkbox-phone">Phone</label>
+    </form>
+    <div id="error-container" style="display: none">
+        <p id="error" style="color: red;"></p>
+        <a href="#" onclick="document.querySelector('#error-container').style.display = 'none';">Close</a>
+    </div>
+    <button type="button" onclick="getAll()" style="margin: 30px 0;">Refresh</button>
+    <table id="table" style="width: 100%;">
+        <thead id="thead"></thead>
         <tbody id="tbody"></tbody>
     </table>
 </main>
 <script>
-let studentsUri = "";
-let errorsUri = "";
-const getAll = async () => {
-    const response = await fetch(studentsUri);
-    const data = await response.json();
-    
-    generateTable(data);
-}
+// ----------------------------------------------
+// Table generation
+// ----------------------------------------------
+
 const table = document.querySelector("#table");
 const tBody = document.querySelector("#tbody");
+const tHead = document.querySelector("#thead");
+const selectedColumns = {
+    id: true,
+    name: true,
+    phone: true   
+};
 const analyzeListLinks = (links) => {
     if (links.length === 0) {
         return;
@@ -79,8 +131,8 @@ const analyzeStudentLinks = (links, element, student) => {
         element.dataset.updateStudent = JSON.stringify({ method: updateLink.Method, href: updateLink.Href });
         
         const option = document.createElement("option");
-        option.value = student.Id;
-        option.innerText = student.Id;
+        option.value = student.Id ?? student.Name ?? student.Phone;
+        option.innerText = student.Id ?? student.Name ?? student.Phone;
         document.querySelector(".update-student .id").appendChild(option);
     }
     const analyzeDeleteLink = () => {
@@ -91,8 +143,8 @@ const analyzeStudentLinks = (links, element, student) => {
         element.dataset.deleteStudent = JSON.stringify({ method: deleteLink.Method, href: deleteLink.Href });
         
         const option = document.createElement("option");
-        option.value = student.Id;
-        option.innerText = student.Id;
+        option.value = student.Id ?? student.Name ?? student.Phone;
+        option.innerText = student.Id ?? student.Name ?? student.Phone;
         document.querySelector(".delete-student .id").appendChild(option);
     }
     
@@ -100,35 +152,263 @@ const analyzeStudentLinks = (links, element, student) => {
     analyzeDeleteLink()
 }
 const generateTable = (data) => {
+    const resetUi = () => {
+        tBody.innerHTML = "";
+        tHead.innerHTML = "";
+        document.querySelector(".update-student .id").innerHTML = "";
+        document.querySelector(".delete-student .id").innerHTML = "";
+    }
     const { Content, Links } = data;
     
-    tBody.innerHTML = "";
-    document.querySelector(".update-student .id").innerHTML = "";
-    document.querySelector(".delete-student .id").innerHTML = "";
-    analyzeListLinks(Links);
+    resetUi();
     
+    analyzeListLinks(Links);
     if (Content.length === 0) {
         return;
+    }
+    
+    if (selectedColumns.id) {
+        const id = document.createElement("td");
+        id.innerText = "Id";
+        tHead.appendChild(id);
+    }
+    if (selectedColumns.name) {
+        const name = document.createElement("td");
+        name.innerText = "Name";
+        tHead.appendChild(name);
+    }
+    if (selectedColumns.phone) {
+        const phone = document.createElement("td");
+        phone.innerText = "Phone";
+        tHead.appendChild(phone);
     }
     
     for (const student of Content) {
         const trBody = document.createElement("tr");
         
-        const id = document.createElement("td");
-        id.innerText = student.Id;
-        trBody.dataset.id = student.Id;
+        if (selectedColumns.id) {
+            const id = document.createElement("td");
+            id.innerText = student.Id;
+            trBody.appendChild(id);
+        }
+        if (selectedColumns.name) {            
+            const name = document.createElement("td");
+            name.innerText = student.Name;
+            trBody.appendChild(name);
+        }
+        if (selectedColumns.phone) {
+            const phone = document.createElement("td");
+            phone.innerText = student.Phone;
+            trBody.appendChild(phone);
+        }
+        
+        trBody.dataset.id = student.Id ?? student.Name ?? student.Phone;
         analyzeStudentLinks(student.Links, trBody, student);
-        const name = document.createElement("td");
-        name.innerText = student.Name;
-        const phone = document.createElement("td");
-        phone.innerText = student.Phone;
 
-        trBody.appendChild(id);
-        trBody.appendChild(name);
-        trBody.appendChild(phone);
         
         tBody.appendChild(trBody);
     }
+}
+
+// ----------------------------------------------
+// Selected columns
+// ----------------------------------------------
+
+const onChosenColumns = async (e) => {
+    const columnId = document.querySelector("#checkbox-id").checked;
+    const columnName = document.querySelector("#checkbox-name").checked;
+    const columnPhone = document.querySelector("#checkbox-phone").checked;
+    
+    if ((columnId || columnName || columnPhone) === false) {
+        e.preventDefault();
+        return;
+    }
+    
+    selectedColumns.id = columnId;
+    selectedColumns.name = columnName;
+    selectedColumns.phone = columnPhone;
+}
+document.querySelector("#checkbox-id").addEventListener("click", onChosenColumns);
+document.querySelector("#checkbox-name").addEventListener("click", onChosenColumns);
+document.querySelector("#checkbox-phone").addEventListener("click", onChosenColumns);
+
+// ----------------------------------------------
+// Params
+// ----------------------------------------------
+
+const defaultParams = {
+    limit: 10,
+    offset: 0,
+    minId: 1,
+    maxId: 9999999,
+    sort: false,
+    like: "",
+    globalLike: "",
+    isMediaTypeJson: true,
+};
+(function setDefaultParams() {
+    document.querySelector("#param-limit").value = defaultParams.limit;
+    document.querySelector("#param-offset").value = defaultParams.offset;
+    document.querySelector("#param-minId").value = defaultParams.minId;
+    document.querySelector("#param-maxId").value = defaultParams.maxId;
+    document.querySelector("#param-sort").checked = defaultParams.sort;
+    document.querySelector("#param-like").value = defaultParams.like;
+    document.querySelector("#param-globalLike").value = defaultParams.globalLike;
+    document.querySelector("#param-mediaType-xml").checked = defaultParams.isMediaTypeJson === false;
+    document.querySelector("#param-mediaType-json").checked = defaultParams.isMediaTypeJson;
+})();
+const getParams = () => {
+    const getColumns = () => {
+        let columns = "";
+        if (selectedColumns.id) {
+            columns += "Id,";    
+        }
+        if (selectedColumns.name) {
+            columns += "Name,";    
+        }
+        if (selectedColumns.phone) {
+            columns += "Phone,";    
+        }
+        return columns.slice(0, -1);
+    }
+    
+    const limit = document.querySelector("#param-limit").value;
+    const offset = document.querySelector("#param-offset").value;
+    const minId = document.querySelector("#param-minId").value;
+    const maxId = document.querySelector("#param-maxId").value;
+    const sort = document.querySelector("#param-sort").checked;
+    const like = document.querySelector("#param-like").value;
+    const globalLike = document.querySelector("#param-globalLike").value;
+    const isMediaTypeJson = document.querySelector("#param-mediaType-json").checked;
+    
+    const params = {
+        limit: limit === "" ? undefined : Number(limit),
+        offset: offset === "" ? undefined : Number(offset),
+        minId: minId === "" ? undefined : Number(minId),
+        maxId: maxId === "" ? undefined : Number(maxId),
+        sort: sort ? sort : undefined,
+        like: like === "" ? undefined : like,
+        globalLike: globalLike === "" ? undefined : globalLike,
+        columns: getColumns(),
+        mediaType: isMediaTypeJson ? "json" : "xml",
+    }
+    
+    return JSON.parse(JSON.stringify(params));
+}
+
+// ----------------------------------------------
+// Xml parsing
+// ----------------------------------------------
+
+function parseXml(xml, arrayTags) {
+    let dom = null;
+    if (window.DOMParser) dom = (new DOMParser()).parseFromString(xml, "text/xml");
+    else if (window.ActiveXObject) {
+        dom = new ActiveXObject('Microsoft.XMLDOM');
+        dom.async = false;
+        if (!dom.loadXML(xml)) throw dom.parseError.reason + " " + dom.parseError.srcText;
+    }
+    else throw new Error("cannot parse xml string!");
+
+    function parseNode(xmlNode, result) {
+        if (xmlNode.nodeName === "#text") {
+            let v = xmlNode.nodeValue;
+            if (v.trim()) result['#text'] = v;
+            return;
+        }
+
+        let jsonNode = {},
+            existing = result[xmlNode.nodeName];
+        if (existing) {
+            if (!Array.isArray(existing)) result[xmlNode.nodeName] = [existing, jsonNode];
+            else result[xmlNode.nodeName].push(jsonNode);
+        }
+        else {
+            if (arrayTags && arrayTags.indexOf(xmlNode.nodeName) !== -1) result[xmlNode.nodeName] = [jsonNode];
+            else result[xmlNode.nodeName] = jsonNode;
+        }
+
+        if (xmlNode.attributes) for (let attribute of xmlNode.attributes) jsonNode[attribute.nodeName] = attribute.nodeValue;
+
+        for (let node of xmlNode.childNodes) parseNode(node, jsonNode);
+    }
+
+    let result = {};
+    for (let node of dom.childNodes) parseNode(node, result);
+
+    return result;
+}
+
+const getArray = (entity, propName) => (
+    Array.isArray(entity[propName]) ? entity[propName] : 
+        typeof entity[propName] === "undefined" ? [] : [entity[propName]]
+);
+const transformStudentsXmlToJsonLike = (data) => {
+    const parsed = parseXml(data);
+    const { Content, Links } = parsed.Students;
+    
+    const transformed = {
+        Content: getArray(Content, "Student"),
+        Links: getArray(Links, "Link"),
+    }
+    
+    transformed.Content = transformed.Content.map(student => {
+        student.Links = getArray(student.Links, "Link");
+        return student;
+    })
+    
+    return transformed;
+}
+const transformErrorXmlToJsonLike = (data) => {
+    const parsed = parseXml(data);
+    const { StatusCode, Links } = parsed.Error;
+    
+    return {
+        StatusCode,
+        Links: getArray(Links, "Link"),
+    };
+}
+const transformErrorDescribeXmlToJsonLike = (data) => {
+    const parsed = parseXml(data);
+    const { Message } = parsed.Error;
+    
+    return {
+        Message
+    };
+}
+
+// ----------------------------------------------
+// Api calls
+// ----------------------------------------------
+
+let studentsUri = "";
+const start = async () => {
+    const response = await fetch("/api");
+    const links = await response.json();
+    
+    studentsUri = links.find(l => l.Rel === "students").Href;
+    
+    document.querySelector("#main").style.display = "block";
+    await getAll();
+}
+
+const getAll = async () => {
+    const params = getParams();
+    const url = new URL(studentsUri);
+    for (let [key, value] of Object.entries(params)) {
+        url.searchParams.set(key, value);
+    }
+    const response = await fetch(url.href);
+    
+    let data;
+    if (params.mediaType === "json") {
+        data = await response.json();
+    } else {
+        const xml = await response.text();
+        data = transformStudentsXmlToJsonLike(xml);
+    }
+    
+    generateTable(data);
 }
 
 const postStudent = async () => {
@@ -152,17 +432,28 @@ const postStudent = async () => {
         return;
     }
     
+    const { mediaType } = getParams();
+    let error;
+    if (mediaType === "json") {
+        error = await response.json();
+    } else {
+        const xml = await response.text();
+        error = transformErrorXmlToJsonLike(xml);
+    }
     
-    // TODO: check for error + describe it
+    await describeError(error);
 }
 
 const putStudent = async () => {
-    const id = document.querySelector(".update-student .id").value ?? "";
+    const id = document.querySelector(".update-student .id").value;
+    if (typeof id === "undefined") {
+        return;    
+    }
+    
     const name = document.querySelector(".update-student .name").value ?? "";
     const phone = document.querySelector(".update-student .phone").value ?? "";
     
     const studentElement = [...tBody.children].find(e => Number(e.dataset.id) === Number(id));
-    console.log(studentElement)
     const { method, href } = JSON.parse(studentElement.dataset.updateStudent);
     const response = await fetch(href,  {
         method: method,
@@ -180,14 +471,25 @@ const putStudent = async () => {
         return;
     }
     
+    const { mediaType } = getParams();
+    let error;
+    if (mediaType === "json") {
+        error = await response.json();
+    } else {
+        const xml = await response.text();
+        error = transformErrorXmlToJsonLike(xml);
+    }
     
-    // TODO: check for error + describe it
+    await describeError(error);
 }
 
 const deleteStudent = async () => {
-    const id = document.querySelector(".delete-student .id").value ?? "";
+    const id = document.querySelector(".delete-student .id").value;
+    if (typeof id === "undefined") {
+        return;    
+    }
     
-    const studentElement = [...tBody.children].find(e => Number(e.dataset.id) === Number(id));  
+    const studentElement = [...tBody.children].find(e => Number(e.dataset.id) === Number(id));
     const { method, href } = JSON.parse(studentElement.dataset.deleteStudent);
     const response = await fetch(href,  {
         method: method,
@@ -198,24 +500,42 @@ const deleteStudent = async () => {
         return;
     }
     
-    const error = await response.json();
-    // TODO: check for error + describe it
+    const { mediaType } = getParams();
+    let error;
+    if (mediaType === "json") {
+        error = await response.json();
+    } else {
+        const xml = await response.text();
+        error = transformErrorXmlToJsonLike(xml);
+    }
+    
+    await describeError(error);
 }
 
-const describeError = async () => {
-        
+const describeError = async (error) => {
+    const { StatusCode, Links } = error;
+    document.querySelector("#error-container").style.display = "block";
+    document.querySelector("#error").innerText = `Code: ${StatusCode}\n`;
+    
+    const describeLink = Links.find(l => l.Rel === "describe");
+    
+    if (!describeLink) {
+        document.querySelector("#error").innerText += "Cannot describe error";
+    }
+    
+    const { Href, Method } = describeLink;
+    const response = await fetch(Href, {
+        method: Method
+    });
+    const data = await response.json();
+    document.querySelector("#error").innerText += data.Message;
 }
 
-(async () => {
-    const response = await fetch("/api");
-    const links = await response.json();
-    
-    studentsUri = links.find(l => l.Rel === "students").Href;
-    errorsUri = links.find(l => l.Rel === "errors").Href;
-    
-    document.querySelector("#main").style.display = "block";
-    await getAll();
-})();
+// ----------------------------------------------
+// Start
+// ----------------------------------------------
+
+start();
 </script>
 </body>
 </html>

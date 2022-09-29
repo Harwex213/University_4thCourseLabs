@@ -8,6 +8,8 @@ namespace Lab03.DTOs
     {
         [XmlArrayItem("Student")]
         public List<GetStudentDto> Content { get; set; }
+        
+        [XmlArrayItem("Link")]
         public List<HateoasLinkDto> Links { get; set; }
         
         public static List<HateoasLinkDto> CreateDefaultLinks(string link)

@@ -1,27 +1,25 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Http.Formatting;
 using System.Web.Http;
+using System.Xml.Serialization;
 using Lab03.DataAccess;
 using Lab03.DTOs;
 using Lab03.Uri;
+using Lab03.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Lab03.Controllers
 {
     public class StudentsController : ApiController
     {
-        // columns (можно through сэлэкт)
-
         private IQueryable<StudentEntity> GetStudentsQuery(GetStudentsUri request)
         {
             var studentsQuery = (IQueryable<StudentEntity>) State.DbContext.Students;
-            if (request.Limit.HasValue)
-            {
-                studentsQuery = studentsQuery.Take(request.Limit.Value);
-            }
-            if (request.Offset.HasValue)
-            {
-                studentsQuery = studentsQuery.Skip(request.Offset.Value);
-            }
             if (request.MinId.HasValue)
             {
                 studentsQuery = studentsQuery.Where(x => x.Id >= request.MinId);
@@ -37,10 +35,56 @@ namespace Lab03.Controllers
             if (request.GlobalLike != null)
             {
                 studentsQuery = studentsQuery.Where(s =>
-                    (s.Id + s.Name + s.Phone).Contains(request.GlobalLike));
+                    (s.Id + s.Name + s.Phone).ToLower().Contains(request.GlobalLike));
+            }
+            if (request.Sort.HasValue)
+            {
+                studentsQuery = studentsQuery.OrderBy(s => s.Name);
+            }
+            else
+            {
+                studentsQuery = studentsQuery.OrderBy(s => s.Id);
+            }
+            if (request.Limit.HasValue)
+            {
+                if (request.Offset.HasValue)
+                {
+                    studentsQuery = studentsQuery.Skip(request.Offset.Value * request.Limit.Value);
+                }
+                studentsQuery = studentsQuery.Take(request.Limit.Value);
+            }
+            
+            return studentsQuery;
+        }
+
+        private XmlSerializer GetStudentsXmlSerializer(GetStudentsDto students, string columns)
+        {
+            XmlSerializer serializer;
+            
+            if (string.IsNullOrEmpty(columns))
+            {
+                serializer = new XmlSerializer(students.GetType());
+            }
+            else
+            {
+                var studentDtoPropertyAttributes = new XmlAttributes()
+                {
+                    XmlIgnore = true
+                };
+                
+                var studentDtoAttributes = new XmlAttributeOverrides();
+                foreach (var prop in typeof(GetStudentDto).GetProperties())
+                {
+                    if (!columns.ToLower().Contains(prop.Name.ToLower()) && prop.Name.ToLower() != "links")
+                    {
+                        studentDtoAttributes.Add(typeof(GetStudentDto), prop.Name, studentDtoPropertyAttributes);
+                    }
+                }
+            
+                serializer = new XmlSerializer(students.GetType(), studentDtoAttributes);
             }
 
-            return studentsQuery;
+            return serializer;
         }
 
         [HttpGet]
@@ -63,7 +107,27 @@ namespace Lab03.Controllers
                 Links = GetStudentsDto.CreateDefaultLinks(link)
             };
 
-            return ResponseOk(content, request.MediaType);
+            if (request.MediaType == GetStudentsUri.SupportedMediaTypeResponse.Xml)
+            {
+                var serializer = GetStudentsXmlSerializer(content, request.Columns);
+                var formatter = new XmlMediaTypeFormatter
+                {
+                    UseXmlSerializer = true
+                };
+                formatter.SetSerializer(content.GetType(), serializer);
+                return Content(HttpStatusCode.OK, content, formatter);
+            }
+
+            var result = string.IsNullOrEmpty(request.Columns) ?
+                JsonConvert.SerializeObject(content) :
+                JsonConvert.SerializeObject(content, Formatting.None, new JsonSerializerSettings
+                {
+                    ContractResolver = new AppJsonContractResolver(
+                        request.Columns.Split(',')
+                            .Append("Content").Append("Links").Append("Href").Append("Rel").Append("Method")
+                            .ToArray())
+                });
+            return Json(JsonConvert.DeserializeObject(result));
         }
         
         [HttpGet]
@@ -73,10 +137,8 @@ namespace Lab03.Controllers
             var studentEntity = State.DbContext.Students.FirstOrDefault(student => student.Id == id);
             if (studentEntity == null)
             {
-                return Content(HttpStatusCode.NotFound, new ResponseErrorDto
-                {
-                    StatusCode = ErrorsController.ErrorCodes.StudentEntityNotFound
-                });
+                return ResponseBadRequest(ErrorsController.ErrorCodes.StudentEntityNotFound, mediaType,
+                    HttpStatusCode.NotFound);
             }
 
             var query = Request.RequestUri.Query;
@@ -115,7 +177,8 @@ namespace Lab03.Controllers
             var studentEntity = State.DbContext.Students.FirstOrDefault(s => s.Id == id);
             if (studentEntity == null)
             {
-                return ResponseBadRequest(ErrorsController.ErrorCodes.StudentEntityNotFound, mediaType);
+                return ResponseBadRequest(ErrorsController.ErrorCodes.StudentEntityNotFound, mediaType,
+                    HttpStatusCode.NotFound);
             }
             studentEntity.Name = studentDto.Name;
             studentEntity.Phone = studentDto.Phone;
@@ -131,7 +194,8 @@ namespace Lab03.Controllers
             var studentEntity = State.DbContext.Students.FirstOrDefault(s => s.Id == id);
             if (studentEntity == null)
             {
-                return ResponseBadRequest(ErrorsController.ErrorCodes.StudentEntityNotFound, mediaType);
+                return ResponseBadRequest(ErrorsController.ErrorCodes.StudentEntityNotFound, mediaType,
+                    HttpStatusCode.NotFound);
             }
             State.DbContext.Students.Remove(studentEntity);
             State.DbContext.SaveChanges();
@@ -145,21 +209,23 @@ namespace Lab03.Controllers
             {
                 return Content<T>(HttpStatusCode.OK, content, Configuration.Formatters.XmlFormatter);
             }
-            return Json<T>(content);
+            return Json<T>(content, new JsonSerializerSettings { Formatting = Formatting.Indented });
         }
         
-        private IHttpActionResult ResponseBadRequest(int code, GetStudentsUri.SupportedMediaTypeResponse mediaType)
+        private IHttpActionResult ResponseBadRequest(int code, GetStudentsUri.SupportedMediaTypeResponse mediaType,
+            HttpStatusCode httpCode = HttpStatusCode.BadRequest)
         {
             var content = new ResponseErrorDto
             {
-                StatusCode = code
+                StatusCode = code,
+                Links = ResponseErrorDto.CreateDefaultLinks(code)
             };
             
             if (mediaType == GetStudentsUri.SupportedMediaTypeResponse.Xml)
             {
-                return Content(HttpStatusCode.BadRequest, content, Configuration.Formatters.XmlFormatter);
+                return Content(httpCode, content, Configuration.Formatters.XmlFormatter);
             }
-            return Content(HttpStatusCode.BadRequest, content, Configuration.Formatters.JsonFormatter);
+            return Content(httpCode, content, Configuration.Formatters.JsonFormatter);
         }
     }
 }

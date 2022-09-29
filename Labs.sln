@@ -1,10 +1,42 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.2092
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab01", "Lab01\Lab01.csproj", "{60E002A3-F0F0-4F7A-A786-6217E2EE418E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab02", "Lab02\Lab02.csproj", "{90EAF696-9FFB-454E-B755-0AF727975F62}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab03", "Lab03\Lab03.csproj", "{5B9212FC-177E-496E-B2BE-BE65F3C66EB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab04", "Lab04\Lab04.csproj", "{E76CFA5A-1419-4993-A44A-B2FEFF6A6245}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab04-Client-WinForm", "Lab04-Client-WinForm\Lab04-Client-WinForm.csproj", "{D5445BC2-6B1C-44B2-8ABF-73371ED23EB9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E76CFA5A-1419-4993-A44A-B2FEFF6A6245} = {E76CFA5A-1419-4993-A44A-B2FEFF6A6245}
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Lab04-Client-WebForm(1)", "Lab04-Client-WebForm\", "{393667A8-EBAF-4B0E-9BAC-3EA57812B9C8}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_63428"
+		Debug.AspNetCompiler.PhysicalPath = "Lab04-Client-WebForm\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_63428\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_63428"
+		Release.AspNetCompiler.PhysicalPath = "Lab04-Client-WebForm\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_63428\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "63428"
+		SlnRelativePath = "Lab04-Client-WebForm\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +56,23 @@ Global
 		{5B9212FC-177E-496E-B2BE-BE65F3C66EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B9212FC-177E-496E-B2BE-BE65F3C66EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B9212FC-177E-496E-B2BE-BE65F3C66EB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E76CFA5A-1419-4993-A44A-B2FEFF6A6245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E76CFA5A-1419-4993-A44A-B2FEFF6A6245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E76CFA5A-1419-4993-A44A-B2FEFF6A6245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E76CFA5A-1419-4993-A44A-B2FEFF6A6245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5445BC2-6B1C-44B2-8ABF-73371ED23EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5445BC2-6B1C-44B2-8ABF-73371ED23EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5445BC2-6B1C-44B2-8ABF-73371ED23EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5445BC2-6B1C-44B2-8ABF-73371ED23EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{393667A8-EBAF-4B0E-9BAC-3EA57812B9C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{393667A8-EBAF-4B0E-9BAC-3EA57812B9C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{393667A8-EBAF-4B0E-9BAC-3EA57812B9C8}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{393667A8-EBAF-4B0E-9BAC-3EA57812B9C8}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC9427B2-0EE4-49AA-9839-4B2E2D326AB1}
 	EndGlobalSection
 EndGlobal
