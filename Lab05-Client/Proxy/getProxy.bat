@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\svcutil.exe" http://localhost:8733/Design_Time_Addresses/Lab05/Service1/?wsdl
