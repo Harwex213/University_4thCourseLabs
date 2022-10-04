@@ -11,13 +11,5 @@ namespace Lab03.DTOs
         
         [XmlArrayItem("Link")]
         public List<HateoasLinkDto> Links { get; set; }
-        
-        public static List<HateoasLinkDto> CreateDefaultLinks(string link)
-        {
-            return new List<HateoasLinkDto>
-            {
-                new HateoasLinkDto { Rel = "create", Method = "POST", Href = link },
-            };
-        }
     }
 }

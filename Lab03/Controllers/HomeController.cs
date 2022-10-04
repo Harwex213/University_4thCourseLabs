@@ -21,6 +21,8 @@ namespace Lab03.Controllers
     {
         public IHttpActionResult GetControllers()
         {
+            HateoasHelper.BaseLink = Request.RequestUri.Scheme + "://" + Request.RequestUri.Authority;
+            
             var host = Request.RequestUri.AbsoluteUri;
             
             return Json(new List<HateoasLinkDto>

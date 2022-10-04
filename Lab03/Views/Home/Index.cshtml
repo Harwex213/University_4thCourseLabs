@@ -13,92 +13,119 @@
 </head>
 <body>
 <main id="main" style="display: none;">
-    <div style="display: flex; flex-direction: row;">
-        <form id="create-student" class="create-student" style="display: flex; flex-direction: column;">
-            <input type="text" class="name" />
-            <input type="text" class="phone input" />
-            
-            <button type="button" onclick="postStudent()">Create</button>
-        </form>
+    <section id="get-all">
+            <div style="display: flex; flex-direction: row;">
+                <form id="create-student" class="create-student" style="display: flex; flex-direction: column;">
+                    <label>Student name
+                        <input type="text" class="name"/>
+                    </label>
+                    <label>Student phone
+                        <input type="text" class="phone input"/>
+                    </label>
+
+                    <button type="button" onclick="postStudent()">Create</button>
+                </form>
+            </div>
+            <form>
+                <p>Params</p>
+                <label>
+                    Limit
+                    <input type="text" id="param-limit">
+                </label>
+                <label>
+                    Offset
+                    <input type="text" id="param-offset">
+                </label>
+                <label>
+                    Sort
+                    <input type="checkbox" id="param-sort" checked>
+                </label>
+                <label>
+                    MinId
+                    <input type="text" id="param-minId">
+                </label>
+                <label>
+                    MaxId
+                    <input type="text" id="param-maxId">
+                </label>
+                <label>
+                    Search by name
+                    <input type="text" id="param-like">
+                </label>
+                <label>
+                    Global search
+                    <input type="text" id="param-globalLike">
+                </label>
+                <p>
+                    MediaType
+                </p>
+                <label>
+                    <input type="radio" name="mediaType" id="param-mediaType-xml">
+                    Xml
+                    <input type="radio" name="mediaType" id="param-mediaType-json">
+                    Json
+                </label>
+            </form>
+            <form>
+                <p>Columns</p>
+                <input type="checkbox" id="checkbox-id" name="Id" checked/>
+                <label for="checkbox-id">Id</label>
+                <input type="checkbox" id="checkbox-name" name="Name" checked/>
+                <label for="checkbox-name">Name</label>
+                <input type="checkbox" id="checkbox-phone" name="Phone" checked/>
+                <label for="checkbox-phone">Phone</label>
+            </form>
+            <div id="error-container" style="display: none">
+                <p id="error" style="color: red;"></p>
+                <a href="#" onclick="document.querySelector('#error-container').style.display = 'none';">Close</a>
+            </div>
+            <button type="button" onclick="getAll()" style="margin: 30px 0;">Refresh</button>
+            <table id="table" style="width: 100%;">
+                <thead id="thead"></thead>
+                <tbody id="tbody"></tbody>
+            </table>
+    </section>
+    <section id="concrete">
         <form class="update-student" style="display: flex; flex-direction: column; margin: 0 15px;">
-            <select class="id">
-            </select>
-            <input type="text" class="name input" />
-            <input type="text" class="phone" />
-            
-            <button class="input" type="button" onclick="putStudent()">Update</button>
+            <h1 class="id"></h1>
+            <label>Student Name
+                <input type="text" class="name input"/>
+            </label>
+            <label>Student Phone
+                <input type="text" class="phone"/>
+            </label>
+
+            <button class="input update" type="button">Update</button>
+            <button class="input cancel" type="button">Cancel</button>
         </form>
-        <form class="delete-student" style="display: flex; flex-direction: column; width: 107px;">
-            <select class="id">
-            </select>
-            
-            <button class="input" type="button" onclick="deleteStudent()">Delete</button>
-        </form>
-    </div>
-    <form>
-        <p>Params</p>
-        <label>
-            Limit
-            <input type="text" id="param-limit">
-        </label>
-        <label>
-            Offset
-            <input type="text" id="param-offset">
-        </label>
-        <label>
-            Sort
-            <input type="checkbox" id="param-sort" checked>
-        </label>
-        <label>
-            MinId
-            <input type="text" id="param-minId">
-        </label>
-        <label>
-            MaxId
-            <input type="text" id="param-maxId">
-        </label>
-        <label>
-            Search by name
-            <input type="text" id="param-like">
-        </label>
-        <label>
-            Global search
-            <input type="text" id="param-globalLike">
-        </label>
-        <p>
-            MediaType
-        </p>
-        <label>
-            <input type="radio" name="mediaType" id="param-mediaType-xml">
-            Xml
-            <input type="radio" name="mediaType" id="param-mediaType-json">
-            Json
-        </label>
-    </form>
-    <form>
-        <p>Columns</p>
-        <input type="checkbox" id="checkbox-id" name="Id" checked/>
-        <label for="checkbox-id">Id</label>
-        <input type="checkbox" id="checkbox-name" name="Name" checked/>
-        <label for="checkbox-name">Name</label>
-        <input type="checkbox" id="checkbox-phone" name="Phone" checked/>
-        <label for="checkbox-phone">Phone</label>
-    </form>
-    <div id="error-container" style="display: none">
-        <p id="error" style="color: red;"></p>
-        <a href="#" onclick="document.querySelector('#error-container').style.display = 'none';">Close</a>
-    </div>
-    <button type="button" onclick="getAll()" style="margin: 30px 0;">Refresh</button>
-    <table id="table" style="width: 100%;">
-        <thead id="thead"></thead>
-        <tbody id="tbody"></tbody>
-    </table>
+        <div id="error-container-2" style="display: none">
+            <p id="error-2" style="color: red;"></p>
+            <a href="#" onclick="document.querySelector('#error-container-2').style.display = 'none';">Close</a>
+        </div>
+    </section>
 </main>
 <script>
+const studentsScreen = document.querySelector("#get-all");
+const studentScreen = document.querySelector("#concrete");
+let screen = "students";
+const toStudentsScreen = () => {
+    studentScreen.style.display = "none";
+    studentsScreen.style.display = "block";
+    screen = "students";
+    document.querySelector('#error-container-2').style.display = 'none';
+    document.querySelector('#error-container').style.display = 'none';
+}
+const toStudentScreen = () => {
+    studentScreen.style.display = "flex";
+    studentsScreen.style.display = "none";
+    screen = "student";
+    document.querySelector('#error-container-2').style.display = 'none';
+    document.querySelector('#error-container').style.display = 'none';
+}
+
 // ----------------------------------------------
 // Table generation
 // ----------------------------------------------
-
 const table = document.querySelector("#table");
 const tBody = document.querySelector("#tbody");
 const tHead = document.querySelector("#thead");
@@ -124,28 +151,35 @@ const analyzeStudentLinks = (links, element, student) => {
         return;    
     }
     const analyzeUpdateLink = () => {
-        const updateLink = links.find(l => l.Rel === "update");
-        if (!updateLink) {
+        const getLink = links.find(l => l.Rel === "self");
+        if (!getLink) {
             return;
         }
-        element.dataset.updateStudent = JSON.stringify({ method: updateLink.Method, href: updateLink.Href });
         
-        const option = document.createElement("option");
-        option.value = student.Id ?? student.Name ?? student.Phone;
-        option.innerText = student.Id ?? student.Name ?? student.Phone;
-        document.querySelector(".update-student .id").appendChild(option);
+        const td = document.createElement("td");
+        const updateButton = document.createElement("button");
+        updateButton.innerText = "Update";
+        updateButton.addEventListener("click", () => {
+            toStudentScreen();
+            getStudent(getLink.Method, getLink.Href);
+        })
+        td.appendChild(updateButton);
+        element.appendChild(td);
     }
     const analyzeDeleteLink = () => {
         const deleteLink = links.find(l => l.Rel === "delete");
         if (!deleteLink) {
             return;
         }
-        element.dataset.deleteStudent = JSON.stringify({ method: deleteLink.Method, href: deleteLink.Href });
         
-        const option = document.createElement("option");
-        option.value = student.Id ?? student.Name ?? student.Phone;
-        option.innerText = student.Id ?? student.Name ?? student.Phone;
-        document.querySelector(".delete-student .id").appendChild(option);
+        const td = document.createElement("td");
+        const deleteButton = document.createElement("button");
+        deleteButton.innerText = "Delete";
+        deleteButton.addEventListener("click", () => {
+            deleteStudent(deleteLink.Method, deleteLink.Href);
+        })
+        td.appendChild(deleteButton);
+        element.appendChild(td);
     }
     
     analyzeUpdateLink();
@@ -155,8 +189,6 @@ const generateTable = (data) => {
     const resetUi = () => {
         tBody.innerHTML = "";
         tHead.innerHTML = "";
-        document.querySelector(".update-student .id").innerHTML = "";
-        document.querySelector(".delete-student .id").innerHTML = "";
     }
     const { Content, Links } = data;
     
@@ -201,13 +233,40 @@ const generateTable = (data) => {
             phone.innerText = student.Phone;
             trBody.appendChild(phone);
         }
-        
-        trBody.dataset.id = student.Id ?? student.Name ?? student.Phone;
         analyzeStudentLinks(student.Links, trBody, student);
 
         
         tBody.appendChild(trBody);
     }
+}
+const generateUpdateForm = (data) => {
+    const resetUi = (id, name, phone) => {
+        document.querySelector(".update-student .id").innerHTML = "Student Id: " + id;
+        document.querySelector(".update-student .name").value = name;
+        document.querySelector(".update-student .phone").value = phone;
+    }
+    
+    const { Id, Name, Phone, Links } = data;
+    
+    resetUi(Id,  Name,  Phone);
+    
+    const updateLink = Links.find(l => l.Rel === "update");
+    
+    const handleClick = () => {
+        putStudent(updateLink.Method, updateLink.Href);
+    };
+    const handleCancel = () => {
+        toStudentsScreen();  
+    };
+    
+    const buttonUpdate = document.querySelector(".update-student .update");
+    const clone = buttonUpdate.cloneNode(true);
+    buttonUpdate.replaceWith(clone);
+    clone.addEventListener("click", handleClick);
+    const buttonCancel = document.querySelector(".update-student .cancel");
+    const clone1 = buttonCancel.cloneNode(true);
+    buttonCancel.replaceWith(clone1);
+    clone1.addEventListener("click", handleCancel);
 }
 
 // ----------------------------------------------
@@ -240,7 +299,7 @@ const defaultParams = {
     limit: 10,
     offset: 0,
     minId: 1,
-    maxId: 9999999,
+    maxId: 9999999, 
     sort: false,
     like: "",
     globalLike: "",
@@ -313,7 +372,7 @@ function parseXml(xml, arrayTags) {
     function parseNode(xmlNode, result) {
         if (xmlNode.nodeName === "#text") {
             let v = xmlNode.nodeValue;
-            if (v.trim()) result['#text'] = v;
+            if (v.trim()) result['text'] = v;
             return;
         }
 
@@ -330,11 +389,15 @@ function parseXml(xml, arrayTags) {
 
         if (xmlNode.attributes) for (let attribute of xmlNode.attributes) jsonNode[attribute.nodeName] = attribute.nodeValue;
 
-        for (let node of xmlNode.childNodes) parseNode(node, jsonNode);
+        for (let node of xmlNode.childNodes) {
+             parseNode(node, jsonNode);   
+        }
     }
 
     let result = {};
-    for (let node of dom.childNodes) parseNode(node, result);
+    for (let node of dom.childNodes) {
+        parseNode(node, result);   
+    }
 
     return result;
 }
@@ -347,8 +410,16 @@ const transformStudentsXmlToJsonLike = (data) => {
     const parsed = parseXml(data);
     const { Content, Links } = parsed.Students;
     
+    const transformedContent = getArray(Content, "Student");
     const transformed = {
-        Content: getArray(Content, "Student"),
+        Content: transformedContent.map(s => {
+            const newS = { Links: s.Links };
+            for (const [key, value] of Object.entries(s)) {
+                if (key === "Links") continue;
+                newS[key] = value.text;
+            }
+            return newS;
+        }),
         Links: getArray(Links, "Link"),
     }
     
@@ -359,12 +430,29 @@ const transformStudentsXmlToJsonLike = (data) => {
     
     return transformed;
 }
+const transformStudentXmlToJsonLike = (data) => {
+    const parsed = parseXml(data);
+    const { Links } = parsed.Student;
+    
+    const s = parsed.Student;
+    const newS = { Links: s.Links };
+    for (const [key, value] of Object.entries(s)) {
+        if (key === "Links") continue;
+        newS[key] = value.text;
+    }
+    const transformed = {
+        ...newS,
+        Links: getArray(Links, "Link"),
+    }
+    
+    return transformed;
+}
 const transformErrorXmlToJsonLike = (data) => {
     const parsed = parseXml(data);
     const { StatusCode, Links } = parsed.Error;
     
     return {
-        StatusCode,
+        StatusCode: StatusCode.text,
         Links: getArray(Links, "Link"),
     };
 }
@@ -373,7 +461,7 @@ const transformErrorDescribeXmlToJsonLike = (data) => {
     const { Message } = parsed.Error;
     
     return {
-        Message
+        Message: Message.text
     };
 }
 
@@ -389,6 +477,7 @@ const start = async () => {
     studentsUri = links.find(l => l.Rel === "students").Href;
     
     document.querySelector("#main").style.display = "block";
+    toStudentsScreen();
     await getAll();
 }
 
@@ -411,12 +500,30 @@ const getAll = async () => {
     generateTable(data);
 }
 
+const getStudent = async (method, href) => {
+    const { mediaType } = getParams();
+    const response = await fetch(href + "?mediaType=" + mediaType, {
+        method: method,   
+    });
+    
+    let data;
+    if (mediaType === "json") {
+        data = await response.json();
+    } else {
+        const xml = await response.text();
+        data = transformStudentXmlToJsonLike(xml);
+    }
+    
+    generateUpdateForm(data);
+}
+
 const postStudent = async () => {
     const name = document.querySelector(".create-student .name").value ?? "";
     const phone = document.querySelector(".create-student .phone").value ?? "";
     
+    const { mediaType } = getParams();
     const { method, href } = JSON.parse(table.dataset.createStudent);
-    const response = await fetch(href,  {
+    const response = await fetch(href + "?mediaType=" + mediaType,  {
         method: method,
         headers: {    
             "Content-Type": "application/json",    
@@ -432,7 +539,6 @@ const postStudent = async () => {
         return;
     }
     
-    const { mediaType } = getParams();
     let error;
     if (mediaType === "json") {
         error = await response.json();
@@ -441,21 +547,15 @@ const postStudent = async () => {
         error = transformErrorXmlToJsonLike(xml);
     }
     
-    await describeError(error);
+    await describeError(error, { container: "#error-container", error: "#error" });
 }
 
-const putStudent = async () => {
-    const id = document.querySelector(".update-student .id").value;
-    if (typeof id === "undefined") {
-        return;    
-    }
-    
+const putStudent = async (method, href) => {
     const name = document.querySelector(".update-student .name").value ?? "";
     const phone = document.querySelector(".update-student .phone").value ?? "";
     
-    const studentElement = [...tBody.children].find(e => Number(e.dataset.id) === Number(id));
-    const { method, href } = JSON.parse(studentElement.dataset.updateStudent);
-    const response = await fetch(href,  {
+    const { mediaType } = getParams();
+    const response = await fetch(href + "?mediaType=" + mediaType,  {
         method: method,
         headers: {    
             "Content-Type": "application/json",    
@@ -467,11 +567,11 @@ const putStudent = async () => {
     });
     
     if (response.status === 200) {
+        toStudentsScreen();
         getAll();
         return;
     }
     
-    const { mediaType } = getParams();
     let error;
     if (mediaType === "json") {
         error = await response.json();
@@ -480,17 +580,11 @@ const putStudent = async () => {
         error = transformErrorXmlToJsonLike(xml);
     }
     
-    await describeError(error);
+    await describeError(error, { container: "#error-container-2", error: "#error-2" });
 }
 
-const deleteStudent = async () => {
-    const id = document.querySelector(".delete-student .id").value;
-    if (typeof id === "undefined") {
-        return;    
-    }
-    
-    const studentElement = [...tBody.children].find(e => Number(e.dataset.id) === Number(id));
-    const { method, href } = JSON.parse(studentElement.dataset.deleteStudent);
+const deleteStudent = async (method, href) => {
+    const { mediaType } = getParams();
     const response = await fetch(href,  {
         method: method,
     });
@@ -500,7 +594,6 @@ const deleteStudent = async () => {
         return;
     }
     
-    const { mediaType } = getParams();
     let error;
     if (mediaType === "json") {
         error = await response.json();
@@ -509,26 +602,34 @@ const deleteStudent = async () => {
         error = transformErrorXmlToJsonLike(xml);
     }
     
-    await describeError(error);
+    await describeError(error, { container: "#error-container", error: "#error" });
 }
 
-const describeError = async (error) => {
+const describeError = async (error, selectors) => {
     const { StatusCode, Links } = error;
-    document.querySelector("#error-container").style.display = "block";
-    document.querySelector("#error").innerText = `Code: ${StatusCode}\n`;
+    document.querySelector(selectors.container).style.display = "block";
+    document.querySelector(selectors.error).innerText = `Code: ${StatusCode}\n`;
     
     const describeLink = Links.find(l => l.Rel === "describe");
     
     if (!describeLink) {
-        document.querySelector("#error").innerText += "Cannot describe error";
+        document.querySelector(selectors.error).innerText += "Cannot describe error";
     }
     
+    const { mediaType } = getParams();
     const { Href, Method } = describeLink;
-    const response = await fetch(Href, {
+    const response = await fetch(Href + "?mediaType=" + mediaType, {
         method: Method
     });
-    const data = await response.json();
-    document.querySelector("#error").innerText += data.Message;
+    
+    let data;
+    if (mediaType === "json") {
+        data = await response.json();
+    } else {
+        const xml = await response.text();
+        data = transformErrorDescribeXmlToJsonLike(xml);
+    }
+    document.querySelector(selectors.error).innerText += data.Message;
 }
 
 // ----------------------------------------------
