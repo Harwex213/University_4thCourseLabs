@@ -1,27 +1,21 @@
 ﻿#include <opencv2\opencv.hpp>
 using namespace cv;
 
-int main(int argc, char* argv[])
-{
-    VideoCapture capture(0);
-    if (!capture.isOpened())
-    {
-        std::cerr << "Unable to open: " << std::endl;
-        return 0;
-    }
+Mat frame;
 
-    Mat frame;
+int handleFrame()
+{
+    Mat localFrame;
     Mat xGrad, yGrad, xGradAbs, yGradAbs, grad;
     Mat laplacianImg, laplacianImgAbs;
     Mat cannyImg;
 
     int state = 1;
-    while (capture.isOpened())
-    {
-        capture >> frame;
-        flip(frame, frame, 1);
+    int keyboard;
 
-        int keyboard = waitKey(30);
+    while (1)
+    {
+        keyboard = waitKey(30);
         switch (keyboard)
         {
         case '1': state = 1; break;
@@ -44,14 +38,10 @@ int main(int argc, char* argv[])
             break;
         case 2:
             GaussianBlur(frame, frame, Size(3, 3), 0, 0, BORDER_DEFAULT);
-            morphologyEx(frame, frame, MORPH_GRADIENT, Mat());
-            break;
-        case 3:
-            GaussianBlur(frame, frame, Size(3, 3), 0, 0, BORDER_DEFAULT);
             cvtColor(frame, frame, COLOR_RGB2GRAY);
 
-            Sobel(frame, xGrad, CV_16S, 1, 0);
-            Sobel(frame, yGrad, CV_16S, 0, 1);
+            Sobel(frame, xGrad, CV_16S, 1, 0, 5);
+            Sobel(frame, yGrad, CV_16S, 0, 1, 5);
 
             convertScaleAbs(xGrad, xGradAbs);
             convertScaleAbs(yGrad, yGradAbs);
@@ -59,31 +49,42 @@ int main(int argc, char* argv[])
             addWeighted(xGradAbs, 0.5, yGradAbs, 0.5, 0, grad);
             frame = grad;
             break;
-        case 4:
+        case 3:
             GaussianBlur(frame, frame, Size(3, 3), 0, 0, BORDER_DEFAULT);
             cvtColor(frame, frame, COLOR_RGB2GRAY);
-            Laplacian(frame, laplacianImg, CV_16S);
+
+            Laplacian(frame, laplacianImg, CV_16S, 5);
             convertScaleAbs(laplacianImg, laplacianImgAbs);
+
             frame = laplacianImgAbs;
             break;
-        case 5:
-            GaussianBlur(frame, frame, Size(3, 3), 0, 0, BORDER_DEFAULT);
+        case 4:
             cvtColor(frame, frame, COLOR_RGB2GRAY);
             Canny(frame, frame, 70, 120, 3);
-            break;
-        case 6:
-            GaussianBlur(frame, frame, Size(3, 3), 0, 0, BORDER_DEFAULT);
-            cvtColor(frame, frame, COLOR_RGB2GRAY);
-            Canny(frame, frame, 10, 100, 5);
-            break;
-        case 7:
-            GaussianBlur(frame, frame, Size(3, 3), 0, 0, BORDER_DEFAULT);
-            cvtColor(frame, frame, COLOR_RGB2GRAY);
-            Canny(frame, frame, 90, 200, 7);
+            bitwise_not(frame, frame);
             break;
         }
 
         imshow("Frame", frame);
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    VideoCapture capture(0);
+
+    if (!capture.isOpened())
+    {
+        std::cerr << "Unable to open: " << std::endl;
+        return 0;
+    }
+
+    std::thread task(handleFrame);
+
+    while (capture.isOpened())
+    {
+        capture >> frame;
+        flip(frame, frame, 1);
     }
 
     return 0;
