@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lab03</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <style>
+        .myContainer {
+            display: flex;
+            flex-direction: row;
+            font-size: 20px;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+<!-- lab03 -->
+<!--  lab03_war_exploded -->
+<main style="margin: 20px;">
+    <h1>Forwarding</h1>
+    <div class="myContainer" >
+        <a href="/lab03/sss">Through SSS forward to GGG</a>
+        <form action="/lab03/sss" method="post">
+            <button class="btn btn-dark">Through SSS forward to GGG with POST method</button>
+        </form>
+        <a href="/lab03/sss?html">Through SSS forward to HTML file</a>
+        <a href="/lab03/sss?double">Through SSS forward to GGG, then forward to HTML file</a>
+    </div>
+    <h1>Redirecting</h1>
+    <div class="myContainer" >
+        <a href="/lab03/sss-redirect">Through SSS redirect to GGG</a>
+        <form action="/lab03/sss-redirect" method="post">
+            <button class="btn btn-dark">Through SSS redirect to GGG with POST method</button>
+        </form>
+        <a href="/lab03/sss-redirect?html">Through SSS redirect to HTML file</a>
+        <a href="/lab03/sss-redirect?double">Through SSS redirect to GGG, then redirect to HTML file</a>
+    </div>
+    <h1>Internal request in SSS</h1>
+    <div class="myContainer" >
+        <a href="/lab03/sss-internal-request">Internal request in SSS to GGG</a>
+    </div>
+</main>
+</body>
+</html>
