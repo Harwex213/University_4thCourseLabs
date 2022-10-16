@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+    <filter>
+        <filter-name>filter-1</filter-name>
+        <filter-class>com.harwex.lab09.filters.FilterF1</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>filter-1</filter-name>
+        <url-pattern>/Ccc</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>filter-2</filter-name>
+        <filter-class>com.harwex.lab09.filters.FilterF2</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>filter-2</filter-name>
+        <url-pattern>/Ccc</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>filter-3</filter-name>
+        <filter-class>com.harwex.lab09.filters.FilterF3</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>filter-3</filter-name>
+        <url-pattern>/Ccc</url-pattern>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>com.harwex.lab09.listeners.ListenerL1</listener-class>
+    </listener>
+    <listener>
+        <listener-class>com.harwex.lab09.listeners.ListenerL2</listener-class>
+    </listener>
+</web-app>
