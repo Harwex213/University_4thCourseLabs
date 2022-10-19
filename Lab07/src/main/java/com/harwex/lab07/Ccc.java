@@ -15,20 +15,6 @@ public class Ccc extends HttpServlet {
         public static String Value1 = "Value1";
         public static String Value2 = "Value2";
         public static String Value3 = "Value3";
-        public static String Session = "Session";
-    }
-
-    private CBean cBean = null;
-
-    private void initializeCBean()
-    {
-        cBean = new CBean();
-    }
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        initializeCBean();
     }
 
     @Override
@@ -42,10 +28,10 @@ public class Ccc extends HttpServlet {
         var value1 = request.getParameter(Parameters.Value1);
         var value2 = request.getParameter(Parameters.Value2);
         var value3 = request.getParameter(Parameters.Value3);
-        var sessionParam = request.getParameter(Parameters.Session);
 
-        if (paramCBean != null && paramCBean.equals("new")) {
-            initializeCBean();
+        CBean cBean = (CBean) request.getAttribute("CBean");
+        if (cBean == null || paramCBean != null && paramCBean.equals("new")) {
+            cBean = new CBean();
         }
         if (value1 != null && !value1.isEmpty()) {
             cBean.setValue1(value1);
@@ -56,12 +42,7 @@ public class Ccc extends HttpServlet {
         if (value3 != null && !value3.isEmpty()) {
             cBean.setValue3(value3);
         }
-
         request.setAttribute("CBean", cBean);
-        if (sessionParam != null) {
-            var session = request.getSession(true);
-            session.setAttribute(session.getId(), cBean);
-        }
 
         getServletContext()
                 .getRequestDispatcher("/Ccc.jsp")
