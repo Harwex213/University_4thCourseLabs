@@ -1,4 +1,4 @@
-package com.harwex.lab09;
+package com.harwex.lab07;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -8,9 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "CccServlet", value = "/Ccc")
-public class Ccc extends HttpServlet {
-    public static class Parameters {
+@WebServlet(name = "CccServletSession", value = "/Ccc-session")
+public class CccSession extends HttpServlet {
+    private static class Parameters {
         public static String CBean = "CBean";
         public static String Value1 = "Value1";
         public static String Value2 = "Value2";
@@ -29,7 +29,8 @@ public class Ccc extends HttpServlet {
         var value2 = request.getParameter(Parameters.Value2);
         var value3 = request.getParameter(Parameters.Value3);
 
-        CBean cBean = (CBean) request.getAttribute("CBean");
+        var session = request.getSession(true);
+        var cBean = (CBean) session.getAttribute(session.getId());
         if (cBean == null || paramCBean != null && paramCBean.equals("new")) {
             cBean = new CBean();
         }
@@ -42,7 +43,7 @@ public class Ccc extends HttpServlet {
         if (value3 != null && !value3.isEmpty()) {
             cBean.setValue3(value3);
         }
-        request.setAttribute("CBean", cBean);
+        session.setAttribute(session.getId(), cBean);
 
         getServletContext()
                 .getRequestDispatcher("/Ccc.jsp")

@@ -1,9 +1,11 @@
 package com.harwex.lab09.filters;
 
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 
 import java.io.IOException;
 
+@WebFilter("/Ccc")
 public class FilterF2 implements Filter {
     private final String FilterName = "FilterF2";
     private final String FilterNumber = "2";
