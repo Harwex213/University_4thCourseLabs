@@ -16,7 +16,7 @@ namespace Lab05_Client
             var sumResult = client.Sum(new WCFSimplex.A
             {
                 S = "al",
-                K = 17,
+                K = 1999,
                 F = 29.2f
             }, new WCFSimplex.A
             {

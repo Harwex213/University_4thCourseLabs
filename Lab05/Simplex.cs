@@ -8,6 +8,7 @@ using System.Text;
 namespace Lab05
 {
     // ПРИМЕЧАНИЕ. Команду "Переименовать" в меню "Рефакторинг" можно использовать для одновременного изменения имени класса "Service1" в коде и файле конфигурации.
+    [ServiceBehavior()]
     public class Simplex : ISimplex
     {
         public int Add(int x, int y)

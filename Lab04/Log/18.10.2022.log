@@ -1,0 +1,6 @@
+----------------------------------
+18.10.2022 08:13:21:481. Request body:
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><Sum-simplex xmlns="http://koa/"><a1 xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><s>wqeq</s><k>2</k><f>1</f></a1><a2 xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><s>r</s><k>2</k><f>3</f></a2></Sum-simplex></s:Body></s:Envelope>
+----------------------------------
+18.10.2022 08:13:25:451. Request body:
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><Sum-simplex xmlns="http://koa/"><a1 xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><s>wqeq</s><k>2</k><f>1</f></a1><a2 xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><s>r</s><k>2</k><f>3</f></a2></Sum-simplex></s:Body></s:Envelope>

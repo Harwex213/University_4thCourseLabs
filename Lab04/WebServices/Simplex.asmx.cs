@@ -1,13 +1,52 @@
-﻿using System.Web.Script.Services;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Web;
+using System.Web.Script.Services;
 using System.Web.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Lab04.WebServices
 {
+    public class IgnoreErrorPropertiesResolver : DefaultContractResolver
+    {
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+        {
+            JsonProperty property = base.CreateProperty(member, memberSerialization);
+            var properties = new List<string>()
+            {
+                "InputStream",
+                "Filter",
+                "Length",
+                "Position",
+                "ReadTimeout",
+                "WriteTimeout",
+                "LastActivityDate",
+                "LastUpdatedDate",
+                "Session"
+            };
+
+            if (properties.Contains(property.PropertyName))
+            {
+                property.Ignored = true;
+            }
+            return property;
+        }
+    }
+
     public class A
     {
         public string s;
         public int k;
         public float f;
+    }
+    
+    public static class Configuration
+    {
+        public const string LogPath = @"D:\Wordplace\2_Blue\1University\yFourth_course\WebServices\Labs\Lab04\Log\";
     }
 
     [WebService(Namespace = "http://koa/", Description = "Lab 04")]
@@ -31,6 +70,19 @@ namespace Lab04.WebServices
         [WebMethod(MessageName = "Sum-simplex", Description = "Summation of 2 classes of A type")]
         public A Sum(A a1, A a2)
         {
+            var now = DateTime.Now;
+            var logName = now.ToString("dd.MM.yyyy") + ".log";
+
+            var startMessageLog = "\n----------------------------------\n" + now.ToString("dd.MM.yyyy hh:mm:ss:fff") + ". Request body:\n";
+            var request = HttpContext.Current.Request;
+            using (var log = File.Open(Configuration.LogPath + logName, FileMode.Append))
+            {
+                var startMessageLogBytes = Encoding.ASCII.GetBytes(startMessageLog);
+                log.Write(startMessageLogBytes, 0, startMessageLogBytes.Length);
+                request.InputStream.Seek(0, SeekOrigin.Begin);
+                request.InputStream.CopyTo(log);
+            }
+
             return new A
             {
                 s = a1.s + a2.s,

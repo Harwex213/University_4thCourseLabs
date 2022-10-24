@@ -4,10 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Xml.Serialization;
 using Harwex.Models;
 
-public partial class Main : System.Web.UI.Page
+public partial class Concat : System.Web.UI.Page
 {
     private Simplex simplex;
 
@@ -19,9 +18,8 @@ public partial class Main : System.Web.UI.Page
         }
 
         simplex = new SimplexImplementaion();
-        int.TryParse(x.Value, out int paramX);
-        int.TryParse(y.Value, out int paramY);
+        double.TryParse(d.Value, out double _d);
 
-        addResult.InnerText = "Result is: " + simplex.Add(paramX, paramY);
+        concatResult.InnerText = "Result is: " + simplex.Concat(k.Value, _d);
     }
 }

@@ -11,14 +11,5 @@ namespace Lab04.WebForms {
     
     
     public partial class SimplexWebForm {
-        
-        /// <summary>
-        /// sumform элемент управления.
-        /// </summary>
-        /// <remarks>
-        /// Автоматически создаваемое поле.
-        /// Для изменения переместите объявление поля из файла конструктора в файл кода программной части.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm sumform;
     }
 }
