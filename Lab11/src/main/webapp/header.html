@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lab11</title>
+</head>
+<body>
+<script type="text/javascript">
+    function OnClick_Header(x,y, z){
+        const pattern = /^[0-9]*\.?[0-9]+$/;
+        if (pattern.test(x.value) && pattern.test(y.value)) {
+            const req = new XMLHttpRequest();
+            if (req) {
+                req.open("POST", "http://localhost:8080/Lab11_war_exploded/Sss-header", true);
+                req.onreadystatechange = function(){
+                    if (req.readyState === 4) {
+                        if (req.status === 200) {
+                            z.value=req.getResponseHeader("Value-Z");
+                        }
+                        else
+                            alert("status = " + req.status + "\n" + req.statusText);
+                    }
+                };
+                req.setRequestHeader("Value-X",  x.value);
+                req.setRequestHeader("Value-Y",  y.value);
+                req.send(null);
+            }
+        } else alert ("error");
+    }
+</script>
+<b> AJAX Example (Header) </b>
+<form name="FHeader" action="#" method="POST">
+    <input name="x" type="text" value="0" size="5" maxlength="5" />
+    <input name="y" type="text" value="0" size="5" maxlength="5" />
+    <input name="BAdd" value="Add" type="button" size="10" maxlength="10" onclick="OnClick_Header(this.form.x, this.form.y, this.form.z)"/>
+    <input 	name="z" id="z" type="text" value="0" />
+</form>
+
+</body>
+</html>

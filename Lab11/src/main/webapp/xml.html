@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lab11</title>
+</head>
+<body>
+<script type="text/javascript">
+    function Fill(req){
+        const xmldoc = req.responseXML;
+        const tsnum = xmldoc.getElementsByTagName("num");
+        let rc = "";
+        for (let i = 0; i < tsnum.length; i++){
+            rc += tsnum[i].textContent + " ";
+        }
+        return (rc);
+    }
+    function OnClick_XML(n, s){
+        const pattern = /^[1-9]+[0-9]*$/;
+        if (pattern.test(n)){
+            const req = new XMLHttpRequest();
+            if (req){
+                req.open("POST", "http://localhost:8080/Lab11_war_exploded/Sss-xml", true);
+                req.onreadystatechange = function(){
+                    if (req.readyState === 4){
+                        if (req.status === 200){
+                            s.firstChild.data = Fill(req);
+                            s.className ="h1";
+                        } else
+                            alert("status = "+ req.status + "\n" + req.statusText);
+                    }
+                };
+                req.setRequestHeader("XRand-N",  n)
+                req.send("null");
+            }
+        }else alert ("error");
+    }
+
+</script>
+<b> AJAX Example (XML) </b>
+<form name="FXML" action="#" method="POST">
+    <input name="n" type="text" value="0" size="2" maxlength="2" />
+    <input name="BRand" value="Rand" type="button" size="10" maxlength="10"
+           onclick="OnClick_XML(this.form.n.value, document.getElementById('xml'))" />
+    &emsp; <span id="xml" class="h2">.....</span>
+</form>
+</body>
+</html>
