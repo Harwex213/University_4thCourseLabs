@@ -9,14 +9,6 @@
 </head>
 <body>
 <script type="text/javascript">
-    function Fill_JSON(req){
-        const xx = JSON.parse(req.responseText);
-        let rc = "";
-        for (let i = 0; i < xx.X.length; i++){
-            rc += (xx.X[i].rand +" ");
-        }
-        return (rc);
-    }
     function OnClick_JSON(n, s){
         const patern = /^[1-9]+[0-9]*$/;
         if (patern.test(n)){
@@ -26,7 +18,7 @@
                 req.onreadystatechange = function(){
                     if (req.readyState === 4){
                         if (req.status === 200){
-                            s.firstChild.data = Fill_JSON(req);
+                            s.firstChild.data = JSON.parse(req.responseText);
                             s.className ="h1";
                         } else
                             alert("status = " + req.status + "\n" + req.statusText);

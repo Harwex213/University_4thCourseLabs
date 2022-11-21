@@ -9,7 +9,7 @@
 </head>
 <body>
 <script type="text/javascript">
-    const isAsync = false;
+    const isAsync = true;
 
     function OnClick_Header(x,y, z){
         const pattern = /^[0-9]*\.?[0-9]+$/;
@@ -32,14 +32,7 @@
             }
         } else alert ("error");
     }
-    function Fill_JSON(req){
-        const xx = JSON.parse(req.responseText);
-        let rc = "";
-        for (let i = 0; i < xx.X.length; i++){
-            rc += (xx.X[i].rand +" ");
-        }
-        return (rc);
-    }
+
     function OnClick_JSON(n, s){
         const patern = /^[1-9]+[0-9]*$/;
         if (patern.test(n)){
@@ -49,7 +42,7 @@
                 req.onreadystatechange = function(){
                     if (req.readyState === 4){
                         if (req.status === 200){
-                            s.firstChild.data = Fill_JSON(req);
+                            s.firstChild.data = JSON.parse(req.responseText);
                             s.className ="h1";
                         } else
                             alert("status = " + req.status + "\n" + req.statusText);
@@ -97,19 +90,19 @@
     <input name="BAdd" value="Add" type="button" size="10" maxlength="10" onclick="OnClick_Header(this.form.x, this.form.y, this.form.z)"/>
     <input 	name="z" id="z" type="text" value="0" />
 </form>
-<b> AJAX Example (XML) </b>
-<form name="FXML" action="#" method="POST">
-    <input name="n" type="text" value="0" size="2" maxlength="2" />
-    <input name="BRand" value="Rand" type="button" size="10" maxlength="10"
-           onclick="OnClick_XML(this.form.n.value, document.getElementById('xml'))" />
-    &emsp; <span id="xml" class="h2">.....</span>
-</form>
 <b> AJAX Example (JSON) </b>
 <form name="FXML" action="#" method="POST">
     <input name="n" type="text" value="0" size="2" maxlength="2" />
     <input name="BRand" value="Rand" type="button" size="10" maxlength="10"
            onclick="OnClick_JSON(this.form.n.value, document.getElementById('json'))" />
     &emsp; <span id="json" class="h2">.....</span>
+</form>
+<b> AJAX Example (XML) </b>
+<form name="FXML" action="#" method="POST">
+    <input name="n" type="text" value="0" size="2" maxlength="2" />
+    <input name="BRand" value="Rand" type="button" size="10" maxlength="10"
+           onclick="OnClick_XML(this.form.n.value, document.getElementById('xml'))" />
+    &emsp; <span id="xml" class="h2">.....</span>
 </form>
 </body>
 </html>

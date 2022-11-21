@@ -22,7 +22,7 @@ public class Sss_XML extends HttpServlet {
         }
 
         public Integer Get() {
-            return (this.random.nextInt()%this.n);
+            return (this.random.nextInt() % this.n);
         }
     }
 
@@ -45,6 +45,7 @@ public class Sss_XML extends HttpServlet {
         }
         s += "</rand>";
         w.println(s);
+
         Thread.sleep(1000);
     }
 

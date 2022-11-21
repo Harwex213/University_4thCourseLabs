@@ -10,22 +10,16 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>Lab11</artifactId>
+    <artifactId>Lab15</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Lab11</name>
+    <name>Lab15</name>
     <packaging>war</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>3.0.8</version>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -44,7 +38,7 @@
                 <configuration>
                     <url>http://localhost:8081/manager/text</url>
                     <server>TomcatServer</server>
-                    <path>/lab11</path>
+                    <path>/lab15</path>
                 </configuration>
             </plugin>
             <plugin>

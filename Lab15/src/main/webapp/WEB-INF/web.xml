@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+    <context-param>
+        <param-name>EmailName</param-name>
+        <param-value></param-value> <!-- здесь был gmail !-->
+    </context-param>
+    <context-param>
+        <param-name>EmailPassword</param-name>
+        <param-value></param-value> <!-- а здесь пароль для приложения (нужна двухфакторка) !-->
+    </context-param>
+    <context-param>
+        <param-name>smtp-host</param-name>
+        <param-value>smtp.gmail.com</param-value>
+    </context-param>
+    <context-param>
+        <param-name>smtp-port</param-name>
+        <param-value>587</param-value>
+    </context-param>
+    <context-param>
+        <param-name>smtp-isAuth</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>smtp-sslTrust</param-name>
+        <param-value>*</param-value>
+    </context-param>
+    <context-param>
+        <param-name>smtp-starttlsEnable</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>imap-host</param-name>
+        <param-value>imap.googlemail.com</param-value>
+    </context-param>
+    <context-param>
+        <param-name>imap-sslTrust</param-name>
+        <param-value>*</param-value>
+    </context-param>
+</web-app>

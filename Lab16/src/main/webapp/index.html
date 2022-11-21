@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h2>Task websockets</h2>
+    <div style="display: flex; flex-direction: row">
+        <button id="launch" style="margin-right: 20px; font-size: 16px;">Пуск</button>
+        <button id="close" style="font-size: 16px;">Стоп</button>
+    </div>
+    <div style="display: flex; flex-direction: row">
+        <div>Status: </div>
+        <div id="status">Остановлено</div>
+    </div>
+    <div>Messages: </div>
+    <div id="messages"></div>
+<script>
+    let ws;
+    const launch = () => {
+        ws = new WebSocket("ws://localhost:8080/Lab16_war_exploded/websocket");
+        ws.onopen = () => document.querySelector("#status").innerText = "Запущено";
+        ws.onclose = () => document.querySelector("#status").innerText = "Остановлено";
+        ws.onmessage = ({ data }) => document.querySelector("#messages").innerText += `${data}\n`;
+    }
+
+    document.querySelector("#launch").addEventListener("click", () => launch());
+    document.querySelector("#close").addEventListener("click", () => {
+        if (ws.readyState === WebSocket.OPEN)
+        {
+            ws.close();
+            document.querySelector("#status").innerText = "Остановлено";
+        }
+    });
+</script>
+</body>
+</html>

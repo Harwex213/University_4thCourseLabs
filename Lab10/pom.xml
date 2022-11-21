@@ -43,7 +43,7 @@
                 <configuration>
                     <url>http://localhost:8081/manager/text</url>
                     <server>TomcatServer</server>
-                    <path>/lab09</path>
+                    <path>/lab10</path>
                 </configuration>
             </plugin>
             <plugin>

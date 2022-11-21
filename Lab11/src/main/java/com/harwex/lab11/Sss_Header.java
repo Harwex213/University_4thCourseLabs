@@ -17,11 +17,12 @@ public class Sss_Header extends HttpServlet {
         System.out.println("Sss:doPost");
         System.out.println(rq.getHeader("Value-X"));
         System.out.println(rq.getHeader("Value-Y"));
-        Float x = new Float(rq.getHeader("Value-X"));
-        Float y = new Float(rq.getHeader("Value-Y"));
-        float z = x + y;
+        var x = new Integer(rq.getHeader("Value-X"));
+        var y = new Integer(rq.getHeader("Value-Y"));
+        var z = x + y;
         System.out.println(z);
         rs.setHeader("Value-Z", Float.toString(z));
+
         Thread.sleep(10000);
     }
 

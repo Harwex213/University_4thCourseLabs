@@ -8,7 +8,10 @@ import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "Sss_JSON", value = "/Sss-json")
 public class Sss_JSON extends HttpServlet {
@@ -22,25 +25,32 @@ public class Sss_JSON extends HttpServlet {
         }
 
         public Integer Get() {
-            return (this.random.nextInt()%this.n);
+            return (this.random.nextInt() % this.n);
         }
     }
     @SneakyThrows
     protected void doPost(HttpServletRequest rq, HttpServletResponse rs) throws IOException {
         System.out.println("Sss_JSON:doPost");
+
         Integer n = new Integer(rq.getHeader("XRand-N"));
-        System.out.println(n);
         XXRand num = new XXRand(n);
+
+        System.out.println(n);
+
+        int cycle = (10 - new Random().nextInt(5));
+        String s ="[";
+        var arr = new ArrayList<Integer>();
+        for (int i = 0; i < cycle; i++)
+        {
+            arr.add(num.Get());
+        }
+        s += arr.stream().map(String::valueOf).collect(Collectors.joining(",")) + "]";
+
+        System.out.println(s);
         rs.setContentType("application/json");
         PrintWriter w = rs.getWriter();
-        String s ="{\"X\":[" ;
-        for (int i = 0; i < 10; i++)
-        {
-            s += ("{\"rand\":"+ num.Get() +"}" + ((i < 9)?",":" "));
-        }
-        s+="]}";
-        System.out.println(s);
         w.println(s);
+
         Thread.sleep(5000);
     }
 }

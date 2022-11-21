@@ -20,6 +20,11 @@
         <module>Lab08</module>
         <module>Lab09</module>
         <module>Lab10</module>
+        <module>Lab11</module>
+        <module>Lab12</module>
+        <module>Lab13</module>
+        <module>Lab15</module>
+        <module>Lab16</module>
     </modules>
 
     <properties>
