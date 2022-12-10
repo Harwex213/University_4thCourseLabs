@@ -1,0 +1,18 @@
+﻿@Model IEnumerable<Lab07_Client.Controllers.Item>
+@{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="jumbotron">
+    <h1>@ViewBag.Title</h1>
+    <p class="lead">@ViewBag.Description</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        @foreach (Lab07_Client.Controllers.Item item in Model)
+        {
+            <h2>@item.Title</h2>
+            <p>@item.Description</p>
+        }
+    </div>
+</div>

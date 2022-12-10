@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="4a8e0070-53e6-4fd6-8ee7-0980369e885b" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:10000/SyndicationService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="e059c409-e592-4946-8318-5e16853d4a3f" SourceId="1" SourceUrl="http://localhost:10000/SyndicationService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="a3d7d24e-7bb2-449f-b433-f6481440807b" SourceId="1" SourceUrl="http://localhost:10000/SyndicationService/mex" />
+    <MetadataFile FileName="System.ServiceModel.Syndication.xsd" MetadataType="Schema" ID="b818ee7b-2359-4084-8fd1-42ee514c29d3" SourceId="1" SourceUrl="http://localhost:10000/SyndicationService/mex" />
+    <MetadataFile FileName="Atom.xsd" MetadataType="Schema" ID="445ebb4b-bf0b-48a8-a8cb-c3587f7e4942" SourceId="1" SourceUrl="http://localhost:10000/SyndicationService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="36dd7cbc-9ea3-4fe7-9c5f-aa77c90598f4" SourceId="1" SourceUrl="http://localhost:10000/SyndicationService/mex" />
+    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="a8df9db1-4ef8-46b3-a622-8ffa9a421619" SourceId="1" SourceUrl="http://localhost:10000/SyndicationService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
