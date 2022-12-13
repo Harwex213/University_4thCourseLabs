@@ -13,10 +13,8 @@ namespace Lab07_Host
     {
         static void Main(string[] args)
         {
-            Uri baseAddress = new Uri("http://localhost:10000/HarwexFeed");
-            WebServiceHost svcHost = new WebServiceHost(typeof(Feed1));
-            //ServiceHost host = new ServiceHost(typeof(IFeedService));
-            svcHost.Open();
+            ServiceHost host = new ServiceHost(typeof(Feed1));
+            host.Open();
             Console.WriteLine("Host Open");
             string s = Console.ReadLine();
         }

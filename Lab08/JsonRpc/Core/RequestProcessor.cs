@@ -37,9 +37,19 @@ namespace Lab08.JsonRpc.Core
             try
             {
                 var requests = JsonConvert.DeserializeObject<Request[]>(body);
-                var results = requests.Select(request => ProcessSingle(context, request))
-                    .Where(response => response != null)
-                    .ToList();
+                var results = new List<Response>();
+                foreach (var request in requests)
+                {
+                    var result = ProcessSingle(context, request);
+                    if (result != null)
+                    {
+                        results.Add(result);
+                    }
+                    if (request.Method.Contains("ErrorExit") && (result?.ErrorSpecified == false || result == null))
+                    {
+                        break;
+                    }
+                }
                 if (results.Count == 0)
                 {
                     return string.Empty;
@@ -173,7 +183,7 @@ namespace Lab08.JsonRpc.Core
                 return new Response
                 {
                     Id = request.Id,
-                    Result = result,
+                    Result = result ?? string.Empty,
                     ResultSpecified = true,
                     ErrorSpecified = false,
                 };

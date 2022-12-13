@@ -27,17 +27,16 @@ namespace Lab07_Client.Controllers
                 var feed = formatter;
                 ViewBag.Title = feed.Feed.Title.Text;
                 ViewBag.Decsription = feed.Feed.Description.Text;
-                var items = feed.Feed.Items.Select(i => new Item
+                ViewBag.Items = feed.Feed.Items.Select(i => new Item
                 {
                     Title = i.Title.Text,
                     Description = ((TextSyndicationContent)i.Content).Text
                 });
-                return View(items);
+                return View();
             }
 
             //var feedClient = new SyndicationService.Feed1Client();
             //var feed = feedClient.CreateFeed();
-
         }
     }
 }

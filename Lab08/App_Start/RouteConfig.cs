@@ -8,7 +8,14 @@ namespace Lab08
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            routes.Add(new Route("{*route}", new RouteHandler()));
+            routes.Add(new Route("json-rpc", new RouteHandler()));
+            
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+            );
+            
         }
     }
 }

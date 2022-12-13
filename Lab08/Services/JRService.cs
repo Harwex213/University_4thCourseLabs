@@ -66,6 +66,12 @@ namespace Lab08.Services
             Context.Session[k] = result;
             return result;
         }
+        
+        [JsonRpcMethod]
+        public void ErrorExit()
+        {
+            Context.Session.Clear();
+        }
 
         public override Service Clone()
         {
